@@ -67,9 +67,11 @@ export function CakeTile({ cake }: { cake: PublicCake }) {
                 type="button"
                 onClick={() => setOpen(true)}
                 aria-label={`Avisar quando ${cake.name} chegar`}
-                className="mt-2 w-full rounded-lg bg-wine px-3 py-2.5 text-sm font-bold text-wine-ink transition hover:brightness-110 active:scale-[0.99]"
+                // Texto curto: "Avisar quando chegar" quebrava em 2 linhas na
+                // grade de 2 colunas do celular. CTA não quebra linha.
+                className="btn mt-2 w-full whitespace-nowrap rounded-lg bg-wine px-3 py-2.5 text-sm font-bold text-wine-ink"
               >
-                Avisar quando chegar
+                Me avisa
               </button>
             )}
           </div>
@@ -150,7 +152,7 @@ function WaitlistDialog({
             </p>
             <button
               onClick={onClose}
-              className="mt-4 w-full rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink"
+              className="btn mt-4 w-full rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink"
             >
               Fechar
             </button>
@@ -190,14 +192,15 @@ function WaitlistDialog({
               <button
                 type="submit"
                 disabled={pending}
-                className="flex-1 rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink disabled:opacity-60"
+                data-pending={pending ? "" : undefined}
+                className="btn flex-1 whitespace-nowrap rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink"
               >
-                {pending ? "Salvando…" : "Quero ser avisado"}
+                {pending ? "Salvando…" : "Me avisa no WhatsApp"}
               </button>
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl border border-line px-4 py-3 text-sm font-medium text-muted"
+                className="btn btn-ghost rounded-xl border border-line px-4 py-3 text-sm font-medium text-muted"
               >
                 Agora não
               </button>

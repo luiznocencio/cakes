@@ -27,7 +27,7 @@ function PhotoPicker({ label }: { label: string }) {
         <button
           type="button"
           onClick={() => ref.current?.click()}
-          className="rounded-lg border border-line px-3 py-2 text-sm font-medium"
+          className="btn btn-ghost rounded-lg border border-line px-3 py-2 text-sm font-medium"
         >
           {label}
         </button>
@@ -85,7 +85,8 @@ export function NewCakeForm() {
       )}
       <button
         disabled={pending}
-        className="w-full rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink disabled:opacity-60"
+        data-pending={pending ? "" : undefined}
+        className="btn w-full rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink"
       >
         {pending ? "Salvando…" : "Adicionar bolo"}
       </button>
@@ -113,7 +114,7 @@ export function ChangePhotoForm({
         )}
       </div>
       <div className="min-w-0">
-        <label className="cursor-pointer rounded-lg border border-line px-3 py-1.5 text-xs font-medium">
+        <label className="btn btn-ghost cursor-pointer inline-block rounded-lg border border-line px-3 py-1.5 text-xs font-medium">
           {imageUrl ? "Trocar foto" : "Colocar foto"}
           <input
             type="file"

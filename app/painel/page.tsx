@@ -11,6 +11,7 @@ import {
 import { formatPhoneBR } from "@/lib/phone";
 import { soldToday } from "@/lib/reports";
 import { listCakes } from "@/lib/stock";
+import { SubmitButton } from "../_components/SubmitButton";
 import {
   addOneAction,
   addStockAction,
@@ -51,7 +52,9 @@ export default async function PainelPage() {
               Bolos
             </Link>
             <form action={logoutAction}>
-              <button className="text-muted underline hover:text-wine">Sair</button>
+              <button className="btn text-muted underline hover:text-wine">
+                Sair
+              </button>
             </form>
           </nav>
         </header>
@@ -72,9 +75,9 @@ export default async function PainelPage() {
                   : `${pending.length} pessoas esperando aviso`}
               </h2>
               <form action={markAllDoneAction}>
-                <button className="rounded-lg bg-wine px-3 py-1.5 text-sm font-semibold text-wine-ink">
+                <SubmitButton className="rounded-lg bg-wine px-3 py-1.5 text-sm font-semibold text-wine-ink">
                   Marcar todos como avisados
-                </button>
+                </SubmitButton>
               </form>
             </div>
             <p className="mt-1 text-xs text-muted">
@@ -100,17 +103,17 @@ export default async function PainelPage() {
                       href={waMeLink(p.phone, buildAssistedMessage(p.cakeName))}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white"
+                      className="btn inline-block rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white"
                     >
                       Enviar
                     </a>
                     <form action={markDoneAction.bind(null, p.notificationId)}>
-                      <button
-                        aria-label="Marcar como avisado"
-                        className="rounded-lg border border-line px-2.5 py-1.5 text-sm"
+                      <SubmitButton
+                        aria-label={`Marcar ${p.name ?? "cliente"} como avisado`}
+                        className="btn-ghost rounded-lg border border-line px-2.5 py-1.5 text-sm"
                       >
                         ✓
-                      </button>
+                      </SubmitButton>
                     </form>
                   </div>
                 </li>
@@ -144,13 +147,13 @@ export default async function PainelPage() {
               {/* O contador: o gesto principal do dia. */}
               <div className="mt-4 flex items-center justify-between gap-2">
                 <form action={sellAction.bind(null, c.id)} className="contents">
-                  <button
+                  <SubmitButton
                     disabled={c.quantity === 0}
                     aria-label={`Vendi um ${c.name}`}
-                    className="h-16 w-20 rounded-xl bg-wine text-3xl font-bold text-wine-ink disabled:opacity-30"
+                    className="h-16 w-20 rounded-xl bg-wine text-3xl font-bold text-wine-ink"
                   >
                     −
-                  </button>
+                  </SubmitButton>
                 </form>
 
                 <div className="text-center">
@@ -167,12 +170,12 @@ export default async function PainelPage() {
                 </div>
 
                 <form action={addOneAction.bind(null, c.id)} className="contents">
-                  <button
+                  <SubmitButton
                     aria-label={`Entrou um ${c.name}`}
-                    className="h-16 w-20 rounded-xl border-2 border-wine text-3xl font-bold text-wine"
+                    className="btn-ghost h-16 w-20 rounded-xl border-2 border-wine text-3xl font-bold text-wine"
                   >
                     +
-                  </button>
+                  </SubmitButton>
                 </form>
               </div>
 
@@ -183,9 +186,12 @@ export default async function PainelPage() {
                   {QUICK_ADD.map((n) => (
                     <form key={n} action={addStockAction.bind(null, c.id)}>
                       <input type="hidden" name="qty" value={n} />
-                      <button className="rounded-lg bg-gold-soft px-3 py-2 text-sm font-bold text-ink">
+                      <SubmitButton
+                        aria-label={`Entraram ${n} ${c.name}`}
+                        className="rounded-lg bg-gold-soft px-3 py-2 text-sm font-bold text-ink"
+                      >
                         +{n}
-                      </button>
+                      </SubmitButton>
                     </form>
                   ))}
                   <form
@@ -202,9 +208,9 @@ export default async function PainelPage() {
                       placeholder="outro"
                       className="w-20 rounded-lg border border-line bg-paper px-2 py-2 text-sm"
                     />
-                    <button className="rounded-lg border border-line px-2.5 py-2 text-sm font-semibold">
+                    <SubmitButton className="btn-ghost rounded-lg border border-line px-2.5 py-2 text-sm font-semibold">
                       OK
-                    </button>
+                    </SubmitButton>
                   </form>
                 </div>
 
@@ -214,9 +220,9 @@ export default async function PainelPage() {
                   </summary>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <form action={undoAction.bind(null, c.id)}>
-                      <button className="rounded-lg border border-line px-3 py-2 text-sm">
+                      <SubmitButton className="btn-ghost rounded-lg border border-line px-3 py-2 text-sm">
                         Desfazer último
-                      </button>
+                      </SubmitButton>
                     </form>
                     <form
                       action={setQtyAction.bind(null, c.id)}
@@ -232,9 +238,9 @@ export default async function PainelPage() {
                         placeholder="tem N"
                         className="w-20 rounded-lg border border-line bg-paper px-2 py-2 text-sm"
                       />
-                      <button className="rounded-lg border border-line px-2.5 py-2 text-sm">
+                      <SubmitButton className="btn-ghost rounded-lg border border-line px-2.5 py-2 text-sm">
                         Corrigir
-                      </button>
+                      </SubmitButton>
                     </form>
                   </div>
                 </details>

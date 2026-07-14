@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import { listCakes } from "@/lib/stock";
+import { SubmitButton } from "../../_components/SubmitButton";
 import { saveCakeDetailsAction, toggleCakeAction } from "../actions";
 import { ChangePhotoForm, NewCakeForm } from "./_forms";
 
@@ -40,9 +41,12 @@ export default async function BolosPage() {
                     </p>
                   </div>
                   <form action={toggleCakeAction.bind(null, c.id, !c.active)}>
-                    <button className="shrink-0 rounded-lg border border-line px-3 py-1.5 text-xs font-medium">
+                    <SubmitButton
+                      aria-label={`${c.active ? "Esconder" : "Mostrar"} ${c.name} no site`}
+                      className="btn-ghost shrink-0 rounded-lg border border-line px-3 py-1.5 text-xs font-medium"
+                    >
                       {c.active ? "Esconder" : "Mostrar"}
-                    </button>
+                    </SubmitButton>
                   </form>
                 </div>
 
@@ -71,9 +75,12 @@ export default async function BolosPage() {
                       aria-label={`Preço de ${c.name}`}
                       className="w-24 rounded-lg border border-line bg-paper px-2 py-2 text-sm tabular-nums"
                     />
-                    <button className="rounded-lg border border-line px-3 py-2 text-sm font-semibold">
+                    <SubmitButton
+                      aria-label={`Salvar preço e descrição de ${c.name}`}
+                      className="btn-ghost rounded-lg border border-line px-3 py-2 text-sm font-semibold"
+                    >
                       Salvar
-                    </button>
+                    </SubmitButton>
                   </div>
                 </form>
               </li>

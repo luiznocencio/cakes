@@ -28,7 +28,8 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink disabled:opacity-60"
+          data-pending={pending ? "" : undefined}
+          className="btn w-full rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink"
         >
           {pending ? "Entrando…" : "Entrar"}
         </button>

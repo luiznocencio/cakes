@@ -44,6 +44,40 @@ body {
   font-optical-sizing: auto;
 }
 
+/* ---------------------------------------------------------------
+   Resposta ao toque. No balcão isso não é enfeite: sem retorno visível,
+   o lojista toca de novo no "−1" e vende um bolo que não saiu.
+   O botão afunda no toque e apaga enquanto o servidor responde.
+   --------------------------------------------------------------- */
+.btn {
+  transition:
+    transform 90ms ease,
+    filter 140ms ease,
+    background-color 140ms ease,
+    border-color 140ms ease;
+  touch-action: manipulation; /* mata o atraso de 300ms no toque */
+}
+.btn:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+/* Enquanto a server action roda. */
+.btn[data-pending] {
+  opacity: 0.55;
+  cursor: progress;
+  transform: scale(0.98);
+}
+/* Botões de contorno não reagem a brilho — reagem a preenchimento. */
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--gold-soft);
+}
+
 /* Foco visível em tudo que é operável — o balcão usa teclado às vezes. */
 :where(a, button, input, select, textarea, summary):focus-visible {
   outline: 2px solid var(--wine);
