@@ -51,6 +51,16 @@ export async function saveCakePhoto(
     return { ok: true, url: blob.url };
   }
 
+  // Sem Blob na Vercel não há onde gravar: o disco é somente leitura.
+  // Falhar aqui, com instrução, é melhor que estourar um 500 no balcão.
+  if (process.env.VERCEL) {
+    return {
+      ok: false,
+      error:
+        "Armazenamento de fotos não configurado. Na Vercel, abra Storage → Create → Blob e faça um novo deploy.",
+    };
+  }
+
   // Dev: grava no próprio /public.
   const { mkdirSync, writeFileSync } = await import("node:fs");
   const path = await import("node:path");
