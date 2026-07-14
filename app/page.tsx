@@ -11,23 +11,23 @@ export default async function Home() {
   const disponiveis = cakes.filter((c) => c.quantity > 0).length;
 
   return (
-    <main className="vitrine flex-1 px-4 py-8 sm:px-6 sm:py-10">
+    <main className="flex-1 px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto w-full max-w-7xl">
         <header className="mb-7 sm:mb-9">
-          <p className="v-display text-2xl font-semibold tracking-tight text-[var(--v-gold)] sm:text-3xl">
+          <p className="display text-2xl font-semibold tracking-tight text-wine sm:text-3xl">
             {storeName}
           </p>
-          <h1 className="v-display mt-1 text-3xl font-semibold leading-tight text-[var(--v-cream)] sm:text-4xl">
+          <h1 className="display mt-1 text-3xl font-semibold leading-tight sm:text-4xl">
             O que tem na vitrine agora
           </h1>
-          <p className="mt-2 max-w-xl text-sm text-[var(--v-muted)]">
+          <p className="mt-2 max-w-xl text-sm text-muted">
             {cakes.length > 0 ? (
               <>
-                <strong className="font-bold text-[var(--v-cream)] tabular-nums">
+                <strong className="font-bold tabular-nums text-ink">
                   {disponiveis} de {cakes.length}
                 </strong>{" "}
-                saíram do forno. Esgotou o seu? Toque nele e a gente te chama no
-                WhatsApp quando voltar.
+                saíram do forno. Esgotou o seu? A gente te chama no WhatsApp
+                quando voltar.
               </>
             ) : (
               "Ainda não temos bolos cadastrados."
@@ -53,11 +53,8 @@ export default async function Home() {
           </div>
         )}
 
-        <footer className="mt-12 border-t border-[var(--v-line)] pt-5 text-xs text-[var(--v-muted)]">
-          <Link
-            href="/painel"
-            className="underline underline-offset-2 hover:text-[var(--v-gold)]"
-          >
+        <footer className="mt-12 border-t border-line pt-5 text-xs text-muted">
+          <Link href="/painel" className="underline underline-offset-2 hover:text-wine">
             Área do balcão
           </Link>
         </footer>

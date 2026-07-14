@@ -1,84 +1,60 @@
 @import "tailwindcss";
 
 /* ---------------------------------------------------------------
-   Painel do balcão (ferramenta de trabalho, usada sob luz de loja):
-   permanece claro e neutro. Tokens originais.
+   Um sistema só, para o site e para o balcão.
+   Paleta tirada do brasão da Primu's: ouro/latão e bordô sobre papel
+   quente. Ouro = "tem hoje" (status), bordô = ação.
    --------------------------------------------------------------- */
 :root {
-  --background: #fbf6ef;
-  --foreground: #3a2a1e;
+  --paper: #faf4ea;
   --card: #ffffff;
-  --border: #eaddcc;
-  --brand: #b4531f;
-  --brand-ink: #ffffff;
-  --muted: #8a7663;
+  --ink: #2a1a15;
+  --muted: #8a7360;
+  --line: #e8dac7;
+  --wine: #7a2420;
+  --wine-ink: #fff7ee;
+  --gold: #c98a2b;
+  --gold-soft: #f7e9cd;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
   --color-card: var(--card);
-  --color-border: var(--border);
-  --color-brand: var(--brand);
-  --color-brand-ink: var(--brand-ink);
+  --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-wine: var(--wine);
+  --color-wine-ink: var(--wine-ink);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
   /* Nomes distintos dos vars do next/font — auto-referência quebra o Tailwind. */
   --font-sans: var(--font-karla), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-fraunces), Georgia, serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--paper);
+  color: var(--ink);
   font-family: var(--font-karla), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* ---------------------------------------------------------------
-   A VITRINE — site público.
-   A página é a vitrine: bolos vistos através do vidro, sobre madeira
-   escura. O fundo espresso faz a foto acender, como no balcão real.
-   Ouro = "tem hoje". Esgotado dessatura atrás do vidro.
-   --------------------------------------------------------------- */
-.vitrine {
-  --v-bg: #22160f;
-  --v-surface: #2e2018;
-  --v-line: #43301f;
-  --v-cream: #f4e7d2;
-  --v-gold: #e3a64b;
-  --v-muted: #a98d71;
-  --v-plum: #7e2b22;
-
-  background: var(--v-bg);
-  color: var(--v-cream);
-  /* Leve calor no topo, como a luz da vitrine batendo de cima. */
-  background-image: radial-gradient(
-    120% 60% at 50% 0%,
-    rgba(227, 166, 75, 0.09) 0%,
-    transparent 60%
-  );
-}
-
-.v-display {
+/* Fraunces só onde carrega personalidade: marca, títulos e números. */
+.display {
   font-family: var(--font-fraunces), Georgia, serif;
   font-optical-sizing: auto;
 }
 
-/* O "vidro": a foto do bolo sob uma superfície levemente refletida. */
-.v-tile {
-  background: var(--v-surface);
-  border: 1px solid var(--v-line);
-}
-
-.v-tile:focus-visible,
-.v-trigger:focus-visible {
-  outline: 2px solid var(--v-gold);
+/* Foco visível em tudo que é operável — o balcão usa teclado às vezes. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 2px solid var(--wine);
   outline-offset: 2px;
+  border-radius: 6px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .v-tile,
-  .v-trigger,
-  .v-dialog {
+  *,
+  *::before,
+  *::after {
     transition: none !important;
     animation: none !important;
   }

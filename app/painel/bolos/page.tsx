@@ -2,7 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import { listCakes } from "@/lib/stock";
-import { createCakeAction, setPriceAction, toggleCakeAction } from "../actions";
+import { saveCakeDetailsAction, toggleCakeAction } from "../actions";
+import { ChangePhotoForm, NewCakeForm } from "./_forms";
 
 export const dynamic = "force-dynamic";
 
@@ -12,76 +13,74 @@ export default async function BolosPage() {
   const cakes = await listCakes();
 
   return (
-    <main className="mx-auto w-full max-w-lg flex-1 px-4 py-6">
-      <div className="mb-5 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Bolos</h1>
-        <Link href="/painel" className="text-sm text-muted underline">
-          ← Balcão
-        </Link>
-      </div>
+    <main className="flex-1 px-4 py-6 sm:px-6">
+      <div className="mx-auto w-full max-w-7xl">
+        <header className="mb-5 flex items-center justify-between gap-3">
+          <h1 className="display text-2xl font-semibold">Bolos</h1>
+          <Link href="/painel" className="text-sm text-muted underline hover:text-wine">
+            ← Balcão
+          </Link>
+        </header>
 
-      <form
-        action={createCakeAction}
-        className="mb-6 space-y-2 rounded-2xl border border-border bg-card p-4"
-      >
-        <p className="font-semibold">Novo bolo</p>
-        <input
-          name="name"
-          required
-          placeholder="Nome do bolo"
-          className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-brand"
-        />
-        <input
-          name="description"
-          placeholder="Descrição (opcional)"
-          className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-brand"
-        />
-        <input
-          name="price"
-          inputMode="decimal"
-          placeholder="Preço (ex.: 18,00)"
-          className="w-full rounded-xl border border-border bg-background px-4 py-3 outline-none focus:border-brand"
-        />
-        <button className="w-full rounded-xl bg-brand px-4 py-3 font-semibold text-brand-ink">
-          Adicionar
-        </button>
-      </form>
+        <div className="grid gap-4 lg:grid-cols-[22rem_1fr]">
+          <NewCakeForm />
 
-      <ul className="space-y-2">
-        {cakes.map((c) => (
-          <li
-            key={c.id}
-            className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3"
-          >
-            <div className="min-w-0 flex-1">
-              <p className="truncate font-medium">{c.name}</p>
-              <p className="text-xs text-muted">
-                {c.active ? "Ativo no site" : "Oculto"} · {c.quantity} em estoque
-              </p>
-              <form
-                action={setPriceAction.bind(null, c.id)}
-                className="mt-1 flex items-center gap-1"
+          <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {cakes.map((c) => (
+              <li
+                key={c.id}
+                className="space-y-3 rounded-xl border border-line bg-card p-4"
               >
-                <span className="text-xs text-muted">R$</span>
-                <input
-                  name="price"
-                  inputMode="decimal"
-                  defaultValue={(c.price / 100).toFixed(2).replace(".", ",")}
-                  className="w-20 rounded-md border border-border bg-background px-2 py-1 text-sm"
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold">{c.name}</p>
+                    <p className="text-xs text-muted">
+                      {c.active ? "Aparece no site" : "Escondido do site"} ·{" "}
+                      {c.quantity} na vitrine
+                    </p>
+                  </div>
+                  <form action={toggleCakeAction.bind(null, c.id, !c.active)}>
+                    <button className="shrink-0 rounded-lg border border-line px-3 py-1.5 text-xs font-medium">
+                      {c.active ? "Esconder" : "Mostrar"}
+                    </button>
+                  </form>
+                </div>
+
+                <ChangePhotoForm
+                  cakeId={c.id}
+                  imageUrl={c.imageUrl}
+                  name={c.name}
                 />
-                <button className="rounded-md border border-border px-2 py-1 text-xs">
-                  Salvar
-                </button>
-              </form>
-            </div>
-            <form action={toggleCakeAction.bind(null, c.id, !c.active)}>
-              <button className="rounded-lg border border-border px-3 py-2 text-sm">
-                {c.active ? "Ocultar" : "Ativar"}
-              </button>
-            </form>
-          </li>
-        ))}
-      </ul>
+
+                <form
+                  action={saveCakeDetailsAction.bind(null, c.id)}
+                  className="space-y-2"
+                >
+                  <input
+                    name="description"
+                    defaultValue={c.description ?? ""}
+                    placeholder="Sabores / descrição"
+                    className="w-full rounded-lg border border-line bg-paper px-3 py-2 text-sm"
+                  />
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted">R$</span>
+                    <input
+                      name="price"
+                      inputMode="decimal"
+                      defaultValue={(c.price / 100).toFixed(2).replace(".", ",")}
+                      aria-label={`Preço de ${c.name}`}
+                      className="w-24 rounded-lg border border-line bg-paper px-2 py-2 text-sm tabular-nums"
+                    />
+                    <button className="rounded-lg border border-line px-3 py-2 text-sm font-semibold">
+                      Salvar
+                    </button>
+                  </div>
+                </form>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </main>
   );
 }

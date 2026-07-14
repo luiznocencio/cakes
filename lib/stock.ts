@@ -60,17 +60,16 @@ async function applyStock(
 export const sellOne = (cakeId: number, by?: string) =>
   applyStock(cakeId, { delta: -1 }, "venda", { by });
 
-/** +1 correção rápida. */
-export const addOne = (cakeId: number, by?: string) =>
-  applyStock(cakeId, { delta: +1 }, "reabastecimento", { by });
-
-/** Nova fornada do dia: adiciona N. */
-export const bake = (cakeId: number, qty: number, by?: string) =>
+/**
+ * Entrou bolo na vitrine. "Nova fornada" e "repor" eram o mesmo evento do
+ * mundo real (chegou bolo) — viraram uma ação só. Registrar tudo como
+ * `fornada` é o que torna o relatório de produção honesto.
+ */
+export const addStock = (cakeId: number, qty: number, by?: string) =>
   applyStock(cakeId, { delta: Math.abs(qty) }, "fornada", { by });
 
-/** Reabastecimento durante o dia: adiciona N (dispara avisos se voltou do 0). */
-export const restock = (cakeId: number, qty: number, by?: string) =>
-  applyStock(cakeId, { delta: Math.abs(qty) }, "reabastecimento", { by });
+/** +1 rápido no contador (também é bolo entrando na vitrine). */
+export const addOne = (cakeId: number, by?: string) => addStock(cakeId, 1, by);
 
 /** Ajuste manual para um valor exato. */
 export const setQuantity = (cakeId: number, target: number, by?: string) =>

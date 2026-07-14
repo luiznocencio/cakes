@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center px-4 py-10">
-      <h1 className="text-2xl font-bold">Área do balcão</h1>
+      <h1 className="display text-2xl font-semibold">Área do balcão</h1>
       <p className="mt-1 text-sm text-muted">Entre com a senha da equipe.</p>
 
       <form action={formAction} className="mt-6 space-y-3">
@@ -20,15 +20,15 @@ export default function LoginPage() {
           required
           autoFocus
           placeholder="Senha"
-          className="w-full rounded-xl border border-border bg-card px-4 py-3 outline-none focus:border-brand"
+          className="w-full rounded-xl border border-line bg-card px-4 py-3 outline-none focus:border-wine"
         />
         {state.error && (
-          <p className="text-sm font-medium text-red-600">{state.error}</p>
+          <p className="text-sm font-medium text-wine">{state.error}</p>
         )}
         <button
           type="submit"
           disabled={pending}
-          className="w-full rounded-xl bg-brand px-4 py-3 font-semibold text-brand-ink disabled:opacity-60"
+          className="w-full rounded-xl bg-wine px-4 py-3 font-bold text-wine-ink disabled:opacity-60"
         >
           {pending ? "Entrando…" : "Entrar"}
         </button>

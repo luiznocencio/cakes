@@ -8,7 +8,11 @@ import {
 } from "@/lib/notifications";
 import { AssistedProvider } from "@/lib/notifications/assisted";
 import { FakeProvider } from "@/lib/notifications/fake";
-import { bake, restock, sellOne, setQuantity, undoLast } from "@/lib/stock";
+import { addStock, sellOne, setQuantity, undoLast } from "@/lib/stock";
+
+// "nova fornada" e "repor" viraram uma ação só: addStock.
+const bake = addStock;
+const restock = addStock;
 import { joinWaitlist } from "@/lib/waitlist";
 
 async function newCake(name = "Bolo Teste") {
