@@ -10,6 +10,44 @@ import {
 
 const initial: CakeFormState = {};
 
+/**
+ * Encolhe a foto no próprio navegador antes de enviar. Foto de celular passa
+ * fácil do limite de 1 MB das Server Actions; aqui ela vira um webp pequeno.
+ * `imageOrientation: "from-image"` respeita a orientação EXIF e o canvas já
+ * remove os metadados — não há risco de girar duas vezes no servidor.
+ */
+async function shrinkForUpload(file: File, max = 1600): Promise<File> {
+  if (!file.type.startsWith("image/")) return file;
+  try {
+    const bitmap = await createImageBitmap(file, {
+      imageOrientation: "from-image",
+    });
+    const scale = Math.min(1, max / Math.max(bitmap.width, bitmap.height));
+    const w = Math.round(bitmap.width * scale);
+    const h = Math.round(bitmap.height * scale);
+    const canvas = document.createElement("canvas");
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    const blob = await new Promise<Blob | null>((res) =>
+      canvas.toBlob(res, "image/webp", 0.85),
+    );
+    if (!blob) return file;
+    return new File([blob], "foto.webp", { type: "image/webp" });
+  } catch {
+    return file; // se algo falhar, manda o original (o limite maior cobre)
+  }
+}
+
+/** Troca o arquivo do input pelo já-encolhido, para o form enviar esse. */
+function replaceInputFile(input: HTMLInputElement, file: File) {
+  const dt = new DataTransfer();
+  dt.items.add(file);
+  input.files = dt.files;
+}
+
 /** Escolher arquivo + prévia. O input nativo não mostra a foto; este mostra. */
 function PhotoPicker({ label }: { label: string }) {
   const [preview, setPreview] = useState<string | null>(null);
@@ -39,9 +77,13 @@ function PhotoPicker({ label }: { label: string }) {
         name="photo"
         accept="image/*"
         className="sr-only"
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          setPreview(f ? URL.createObjectURL(f) : null);
+        onChange={async (e) => {
+          const input = e.currentTarget;
+          const f = input.files?.[0];
+          if (!f) return setPreview(null);
+          setPreview(URL.createObjectURL(f));
+          const small = await shrinkForUpload(f);
+          replaceInputFile(input, small);
         }}
       />
     </div>
@@ -122,7 +164,14 @@ export function ChangePhotoForm({
             accept="image/*"
             className="sr-only"
             aria-label={`Foto de ${name}`}
-            onChange={(e) => e.currentTarget.form?.requestSubmit()}
+            onChange={async (e) => {
+              const input = e.currentTarget;
+              const f = input.files?.[0];
+              if (!f) return;
+              const small = await shrinkForUpload(f);
+              replaceInputFile(input, small);
+              input.form?.requestSubmit();
+            }}
           />
         </label>
         {pending && <p className="mt-1 text-xs text-muted">Enviando…</p>}

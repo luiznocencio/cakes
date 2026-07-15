@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
     ],
   },
+  experimental: {
+    // O padrão é 1 MB e a foto de um celular passa disso. O cliente já
+    // encolhe antes de enviar; esta folga cobre casos em que não deu.
+    serverActions: { bodySizeLimit: "12mb" },
+  },
 };
 
 export default nextConfig;
