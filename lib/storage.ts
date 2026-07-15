@@ -42,11 +42,20 @@ export async function saveCakePhoto(
   // Nome novo a cada upload — evita cache velho do navegador/CDN.
   const key = `bolos/${slug}-${Date.now().toString(36)}.webp`;
 
-  if (process.env.BLOB_READ_WRITE_TOKEN) {
+  // Aceita o token mesmo se a Vercel injetou com um prefixo no nome
+  // (ex.: MEUSTORE_BLOB_READ_WRITE_TOKEN).
+  const blobToken =
+    process.env.BLOB_READ_WRITE_TOKEN ??
+    Object.entries(process.env).find(([k]) =>
+      k.endsWith("BLOB_READ_WRITE_TOKEN"),
+    )?.[1];
+
+  if (blobToken) {
     const { put } = await import("@vercel/blob");
     const blob = await put(key, webp, {
       access: "public",
       contentType: "image/webp",
+      token: blobToken,
     });
     return { ok: true, url: blob.url };
   }
