@@ -12,6 +12,7 @@
     "db:seed": "tsx db/seed.ts",
     "db:reset": "tsx db/reset.ts",
     "db:setup": "npm run db:migrate && npm run db:seed",
+    "og:photos": "tsx scripts/og-photos.ts",
     "test": "vitest run"
   },
   "dependencies": {
