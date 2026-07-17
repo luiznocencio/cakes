@@ -22,19 +22,21 @@ Por isso `title`/`description` e `og:title`/`og:description` carregam textos **d
 
 | Campo | Texto | Tamanho |
 |---|---|---|
-| `title` | `Bolos caseiros no Benedito Bentes, Maceió \| Primu's Bolos` | 57 caracteres |
-| `description` | `Bolos caseiros no Benedito Bentes, Maceió. Veja o que está na vitrine agora e receba um aviso no WhatsApp quando o seu favorito sair do forno.` | 142 caracteres |
+| `title` | `Bolos caseiros no Benedito Bentes, Primu's Bolos.` | 49 caracteres |
+| `description` | `Bolos caseiros no Benedito Bentes. Veja o que está na vitrine agora e receba um aviso no WhatsApp quando o seu favorito sair do forno.` | 134 caracteres |
 
 Os dois cabem antes do corte do Google (~60 e ~155 caracteres).
+
+**Decisão do dono:** os textos citam o bairro, não a cidade. Isso restringe o alcance a quem busca "Benedito Bentes" — quem digita "bolo caseiro em Maceió" não encontra. A escolha foi consciente e é reversível: adicionar "Maceió" é editar duas strings.
 
 ### WhatsApp
 
 | Campo | Texto |
 |---|---|
-| `og:title` | `Primu's Bolos — o que tem na vitrine agora` |
+| `og:title` | `Primu's Bolos, veja o que tem na vitrine agora` |
 | `og:description` | `Esgotou o seu? A gente te chama no WhatsApp quando voltar.` |
 
-O `og:title` é o texto que já existia, mantido porque é bom e espelha o `<h1>` da home.
+O `og:title` é um convite ("veja o que tem"), não um rótulo — o card do WhatsApp existe para ser tocado. Diferente do `title` do Google, que precisa casar com o que a pessoa digitou.
 
 ## Favicon
 
