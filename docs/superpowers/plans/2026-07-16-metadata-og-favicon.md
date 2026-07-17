@@ -191,8 +191,11 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 **Files:**
 - Create: `E:\CODE\cakes\lib\og-photos.ts`
 - Create: `E:\CODE\cakes\scripts\og-photos.ts`
+- Test: `E:\CODE\cakes\test\og.test.ts`
 - Modify: `E:\CODE\cakes\package.json` (adiciona o script `og:photos`)
 - Create (gerado, commitado): `public/og/banana-canela.jpg`, `cenoura-chocolate.jpg`, `goiabada-queijo.jpg`, `vulcao.jpg`
+
+**TDD:** sim, e ele encaixa naturalmente aqui. O teste afirma que todo slug tem seu jpeg e que a soma cabe no orçamento — falha antes do script existir (RED), passa depois de rodá-lo (GREEN). Ele guarda o modo de falha que motivou o `lib/og-photos.ts`: se as listas divergirem, o build quebra **na Vercel**; o teste pega isso aqui, em segundos.
 
 **Interfaces:**
 - Consumes: `public/bolos/{slug}.webp` (já no repo).
@@ -229,7 +232,52 @@ export const OG_PHOTO_SLUGS = [
 export const OG_PHOTO_SIZE = { width: 300, height: 420 } as const;
 ```
 
-- [ ] **Step 2: Criar `scripts/og-photos.ts`**
+- [ ] **Step 2: Escrever o teste que falha**
+
+Criar `test/og.test.ts`:
+
+```ts
+import fs from "node:fs";
+import path from "node:path";
+import { describe, expect, it } from "vitest";
+import { OG_PHOTO_SLUGS } from "@/lib/og-photos";
+
+// O ImageResponse tem teto de 500KB de bundle contando as imagens embutidas.
+// Ficar em 60% deixa folga para o JSX e o CSS do card.
+const BUDGET_BYTES = 500 * 1024;
+const MAX_PHOTOS_SHARE = 0.6;
+
+const OG_DIR = path.join(process.cwd(), "public", "og");
+
+describe("fotos do og:image", () => {
+  it("tem um jpeg para cada slug do card", () => {
+    const faltando = OG_PHOTO_SLUGS.filter(
+      (slug) => !fs.existsSync(path.join(OG_DIR, `${slug}.jpg`)),
+    );
+    // Se isto falhar, o opengraph-image.tsx vai tentar ler um arquivo que
+    // não existe e o build quebra — na Vercel, não aqui. Rode: npm run og:photos
+    expect(faltando).toEqual([]);
+  });
+
+  it("cabe no orçamento de bundle do ImageResponse", () => {
+    const total = OG_PHOTO_SLUGS.reduce(
+      (soma, slug) => soma + fs.statSync(path.join(OG_DIR, `${slug}.jpg`)).size,
+      0,
+    );
+    expect(total).toBeLessThan(BUDGET_BYTES * MAX_PHOTOS_SHARE);
+  });
+});
+```
+
+- [ ] **Step 3: Rodar o teste e ver falhar (RED)**
+
+```bash
+npx vitest run test/og.test.ts
+```
+
+Esperado: **FALHA**. O primeiro teste falha porque `public/og/` ainda não existe — os 4 slugs aparecem em `faltando`. É a falha certa: ela prova que o teste enxerga o que deveria enxergar.
+
+- [ ] **Step 4: Criar `scripts/og-photos.ts`**
 
 ```ts
 import fs from "node:fs";
@@ -288,7 +336,7 @@ main().then(
 );
 ```
 
-- [ ] **Step 3: Adicionar o script ao `package.json`**
+- [ ] **Step 5: Adicionar o script ao `package.json`**
 
 Na seção `"scripts"`, junto dos outros:
 
@@ -296,7 +344,7 @@ Na seção `"scripts"`, junto dos outros:
 "og:photos": "tsx scripts/og-photos.ts",
 ```
 
-- [ ] **Step 4: Rodar e conferir o orçamento**
+- [ ] **Step 6: Rodar e conferir o orçamento**
 
 ```bash
 cd /e/CODE/cakes
@@ -305,14 +353,22 @@ npm run og:photos
 
 Esperado: 4 linhas `✓ <slug>.jpg — NN KB` e um total **abaixo de 300 KB** (60% do teto). Se o script lançar o erro de orçamento, baixe `quality` para 65 e rode de novo. Se ainda estourar, reduza `W`/`H`.
 
-- [ ] **Step 5: Olhar as imagens**
+- [ ] **Step 7: Rodar o teste e ver passar (GREEN)**
+
+```bash
+npx vitest run test/og.test.ts
+```
+
+Esperado: **2 testes passam**. O mesmo teste que falhava no Step 3 agora passa, sem que você o tenha alterado.
+
+- [ ] **Step 8: Olhar as imagens**
 
 Abra `public/og/*.jpg`. Cada uma deve mostrar um bolo inteiro e reconhecível, não um recorte estranho. As fotos-fonte são 4:3 e o corte aqui é 300×420 (retrato) — **é um corte agressivo**. Se algum bolo ficar decapitado, ajuste `position` para `"top"` naquele caso ou troque o slug por outro dos 12 disponíveis (edite `OG_PHOTO_SLUGS` em `lib/og-photos.ts`, nunca só num dos dois consumidores).
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
-git add lib/og-photos.ts scripts/og-photos.ts package.json public/og
+git add lib/og-photos.ts scripts/og-photos.ts test/og.test.ts package.json public/og
 git commit -m "Fotos jpeg para o card de compartilhamento
 
 O satori não lê webp, então as fotos do og:image precisam de outro
@@ -470,7 +526,9 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 npm test
 ```
 
-Esperado: **13 testes passam**, e o `test/storage.test.ts` falha no teardown com `EPERM`. Isso é conhecido, anterior a este trabalho, e específico do Windows: o teste cria um `.webp` temporário em `public/bolos` e não consegue apagá-lo. Não é regressão. Confirme que o número de testes que passam continua 13.
+Esperado: **15 testes passam** — os 13 que já existiam mais os 2 de `test/og.test.ts` da Task 3.
+
+O `test/storage.test.ts` falha no teardown com `EPERM`. **Isso é conhecido e não é regressão:** é específico do Windows, anterior a este trabalho — o teste cria um `.webp` temporário em `public/bolos` e o `afterAll` não consegue apagá-lo. Os testes em si passam; só a limpeza quebra. Não tente consertar: está fora do escopo deste plano.
 
 - [ ] **Step 2: Limpar o artefato que o teste deixa para trás**
 
